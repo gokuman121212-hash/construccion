@@ -3,185 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LabGuard AI - Asistente de Laboratorio</title>
-    
-    <!-- Favicon estilo Kali Linux Dragón -->
-    <link rel="icon" type="image/png" href="https://www.kali.org/images/kali-logo.svg">
+    <title>REEF - Copiloto de Laboratorio Tecsup</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Marked.js para interpretar Markdown y bloques de código -->
+    <!-- Marked.js para interpretar Markdown -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
     
     <style>
-        body {
-            background-color: #080711;
-            background-image: 
-                radial-gradient(at 10% 10%, rgba(88, 28, 135, 0.45) 0px, transparent 50%),
-                radial-gradient(at 90% 15%, rgba(30, 58, 138, 0.4) 0px, transparent 50%),
-                radial-gradient(at 50% 85%, rgba(124, 58, 237, 0.25) 0px, transparent 50%),
-                radial-gradient(at 80% 80%, rgba(14, 165, 233, 0.15) 0px, transparent 50%);
-            background-attachment: fixed;
-        }
-
-        .chat-watermark {
-            background-image: url('https://www.kali.org/images/kali-logo.svg');
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 260px;
-        }
-
-        .markdown-body p { margin-bottom: 0.75rem; line-height: 1.5; }
+        body { background-color: #f8fafc; color: #0f172a; }
+        .markdown-body p { margin-bottom: 0.75rem; line-height: 1.6; }
         .markdown-body ul { list-style-type: disc; margin-left: 1.25rem; margin-bottom: 0.75rem; }
         .markdown-body ol { list-style-type: decimal; margin-left: 1.25rem; margin-bottom: 0.75rem; }
-        .markdown-body li { margin-bottom: 0.35rem; }
-        .markdown-body strong { color: #c084fc; font-weight: 600; }
-        
-        .markdown-body pre {
-            background-color: #020617;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.75rem;
-            padding: 0.85rem;
-            margin: 0.75rem 0;
-            overflow-x: auto;
-            font-family: monospace;
-            font-size: 0.7rem;
-            color: #38bdf8;
-        }
-        .markdown-body code {
-            font-family: monospace;
-            background-color: rgba(15, 23, 42, 0.8);
-            padding: 0.15rem 0.35rem;
-            border-radius: 0.35rem;
-            color: #f472b6;
-            font-size: 0.75rem;
-        }
-        .markdown-body pre code { background-color: transparent; padding: 0; color: #e2e8f0; }
-
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
-        ::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.4); border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(168, 85, 247, 0.8); }
+        .markdown-body code { font-family: monospace; background-color: #e2e8f0; padding: 0.15rem 0.35rem; border-radius: 0.2rem; color: #0f172a; font-size: 0.8rem; }
+        .markdown-body pre { background-color: #0f172a; border-radius: 0.375rem; padding: 0.75rem; margin: 0.5rem 0; overflow-x: auto; color: #38bdf8; font-size: 0.75rem; }
+        .markdown-body pre code { background-color: transparent; padding: 0; color: #f8fafc; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
     </style>
 </head>
-<body class="font-sans min-h-screen text-slate-100 flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+<body class="font-sans min-h-screen flex flex-col justify-between selection:bg-slate-900 selection:text-white">
 
-    <!-- Encabezado Glassmorphism -->
-    <header class="sticky top-0 z-50 bg-slate-950/40 backdrop-blur-xl border-b border-white/10 px-6 py-4">
+    <!-- Header Minimalista -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 px-8 py-3.5">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-3.5">
-                <div class="relative flex items-center justify-center p-2 rounded-2xl bg-purple-950/50 border border-purple-500/30 shadow-[0_0_20px_rgba(168,85,247,0.2)]">
-                    <img src="https://www.kali.org/images/kali-logo.svg" alt="Kali Dragon" class="w-7 h-7 drop-shadow-[0_0_8px_rgba(168,85,247,0.8)]">
+            <div class="flex items-center space-x-3">
+                <div class="px-3 py-1 bg-slate-900 text-white text-xs font-bold tracking-widest uppercase rounded">
+                    REEF
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-purple-200 to-indigo-300 bg-clip-text text-transparent">
-                        LabGuard AI
+                    <h1 class="text-sm font-semibold tracking-wide text-slate-900">
+                        Copiloto Guiado de Laboratorio Tecsup
                     </h1>
-                    <p class="text-[10px] text-purple-300/70 font-mono tracking-widest uppercase">Multi-Agent & Local Ecosystem</p>
+                    <p class="text-[11px] text-slate-500 tracking-wider">Flujo Interactivo • Evidencias • Exportación .DOCX</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <!-- Selector de Modo / Modelo -->
-                <select id="modelMode" class="bg-slate-900 border border-purple-500/30 text-purple-200 text-xs rounded-full px-3 py-1.5 focus:outline-none focus:border-purple-500 cursor-pointer shadow-inner">
-                    <option value="fast">⚡ Modo Rápido (Flash)</option>
-                    <option value="deep">🧠 Modo Profundo (Auditoría)</option>
+            <div class="flex items-center gap-4">
+                <select id="modelMode" class="bg-slate-50 border border-slate-300 text-slate-700 text-xs rounded px-3 py-1.5 focus:outline-none focus:border-slate-900 cursor-pointer">
+                    <option value="fast">Modo Guiado Paso a Paso</option>
+                    <option value="deep">Modo Auditoría Profunda</option>
                 </select>
 
-                <button id="btnClearChat" class="text-[11px] bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 px-3 py-1.5 rounded-full transition">
-                    🗑️ Limpiar
+                <button id="btnClearChat" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 px-3 py-1.5 rounded transition">
+                    Reiniciar Laboratorio
                 </button>
             </div>
         </div>
     </header>
 
     <!-- Contenido Principal -->
-    <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 w-full">
+    <main class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 w-full">
 
-        <!-- Columna Izquierda -->
-        <section class="bg-slate-950/40 backdrop-blur-2xl p-6 rounded-3xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between space-y-6">
-            <div class="space-y-6">
-                <div class="space-y-2">
-                    <h2 class="text-sm font-semibold text-purple-200 flex items-center gap-2 tracking-wide uppercase">
-                        <span class="p-1 rounded-lg bg-purple-500/20 text-purple-400">📄</span> Cargar Guía
+        <!-- Columna Izquierda: Pasos y Carga de Archivos (4 Cols) -->
+        <section class="lg:col-span-4 bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between space-y-5">
+            <div class="space-y-5">
+                <!-- Step 1: Carga de Guía Inicial -->
+                <div>
+                    <h2 class="text-xs font-bold text-slate-900 tracking-wider uppercase mb-1">
+                        1. Documento Base del Laboratorio
                     </h2>
-                    <p class="text-xs text-slate-400">Sube el PDF para indexación local en ChromaDB / Ollama.</p>
+                    <p class="text-[11px] text-slate-500 mb-2">Sube la guía en PDF enviada por el docente.</p>
+                    <form id="uploadForm" class="space-y-2">
+                        <input type="file" id="pdfFile" accept=".pdf" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-900 file:text-white hover:file:bg-slate-800 cursor-pointer border border-slate-200 bg-slate-50 rounded p-1">
+                        <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-medium tracking-wider uppercase transition">
+                            Procesar y Desglosar Guía
+                        </button>
+                    </form>
+                    <div id="statusMessage" class="hidden mt-2 p-2.5 rounded text-xs font-medium border"></div>
                 </div>
 
-                <form id="uploadForm" class="space-y-3">
-                    <input type="file" id="pdfFile" accept=".pdf" class="w-full text-xs text-slate-300 file:mr-3 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-purple-600/30 file:text-purple-200 hover:file:bg-purple-600/50 cursor-pointer border border-white/10 bg-slate-900/50 rounded-2xl p-2 focus:outline-none focus:border-purple-500/50 transition">
-                    <button type="submit" class="w-full bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white py-3 rounded-full text-xs font-semibold uppercase tracking-wider transition shadow-[0_0_25px_rgba(124,58,237,0.4)] active:scale-[0.98]">
-                        Procesar Documento
-                    </button>
-                </form>
+                <!-- Step 2: Carga de Recursos Externos (Bases de datos / Scripts) -->
+                <div class="pt-4 border-t border-slate-200">
+                    <h2 class="text-xs font-bold text-slate-900 tracking-wider uppercase mb-1">
+                        2. Archivos Auxiliares / DB
+                    </h2>
+                    <p class="text-[11px] text-slate-500 mb-2">Sube scripts SQL, bases de datos o adjuntos del docente.</p>
+                    <input type="file" id="auxFile" class="w-full text-xs text-slate-600 file:mr-2 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 cursor-pointer border border-slate-200 bg-slate-50 rounded p-1">
+                </div>
 
-                <div id="statusMessage" class="hidden p-3.5 rounded-2xl text-xs font-medium backdrop-blur-md border"></div>
-
-                <div class="pt-4 border-t border-white/10">
-                    <h3 class="text-xs font-semibold text-purple-200 uppercase tracking-wide mb-3 flex items-center gap-2">
-                        <span class="p-1 rounded-lg bg-indigo-500/20 text-indigo-400">📋</span> Pasos de Trabajo
+                <!-- Step 3: Navegador de Secciones Extraídas -->
+                <div class="pt-4 border-t border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-900 tracking-wider uppercase mb-2">
+                        3. Secciones del Informe
                     </h3>
-                    <ul id="checklistContainer" class="space-y-2 text-xs text-slate-300 bg-slate-900/40 p-3.5 rounded-2xl border border-white/5 min-h-[100px] max-h-[160px] overflow-y-auto backdrop-blur-sm">
-                        <li class="italic text-slate-500 text-center py-6">Carga un documento para extraer los pasos.</li>
-                    </ul>
+                    <div id="stepsContainer" class="space-y-1.5 text-xs bg-slate-50 p-2.5 rounded border border-slate-200 max-h-[180px] overflow-y-auto">
+                        <div class="text-slate-400 text-center py-6 italic text-[11px]">
+                            Cargue la guía para descomponer el informe en apartados.
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="pt-4 border-t border-white/10">
-                <h3 class="text-xs font-semibold text-purple-200 uppercase tracking-wide mb-2 flex items-center gap-2">
-                    <span class="p-1 rounded-lg bg-emerald-500/20 text-emerald-400">📝</span> Validar Informe
-                </h3>
-                <textarea id="reportText" placeholder="Escribe tus respuestas o conclusiones aquí..." class="w-full h-20 p-3 text-xs bg-slate-900/60 border border-white/10 rounded-2xl focus:outline-none focus:border-purple-500/60 text-slate-200 mb-2 resize-none placeholder-slate-500 backdrop-blur-sm"></textarea>
-                <button id="btnEvaluate" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition shadow-sm active:scale-[0.98]">
-                    Evaluar Informe
+            <!-- Botón Final de Exportación a Word -->
+            <div class="pt-4 border-t border-slate-200">
+                <button id="btnExportDocx" class="w-full bg-emerald-800 hover:bg-emerald-900 text-white py-2.5 rounded text-xs font-semibold tracking-wider uppercase transition flex items-center justify-center gap-2">
+                    <span>Exportar Informe Final (.docx)</span>
                 </button>
             </div>
         </section>
 
-        <!-- Columna Derecha: Chat Interface -->
-        <section class="lg:col-span-2 bg-slate-950/40 backdrop-blur-2xl p-6 rounded-3xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between h-[680px]">
+        <!-- Columna Central/Derecha: Asistente Interactivo y Carga de Evidencias (8 Cols) -->
+        <section class="lg:col-span-8 bg-white p-5 rounded-lg border border-slate-200 shadow-sm flex flex-col justify-between h-[720px]">
             <div>
-                <h2 class="text-base font-semibold text-purple-100 flex items-center gap-2 tracking-wide">
-                    <span>💬</span> Asistente Pedagógico Multiagente
-                </h2>
-                <p class="text-xs text-slate-400 mt-0.5">Control de motor local mediante FastAPI y Ollama.</p>
+                <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-3">
+                    <div>
+                        <h2 class="text-sm font-bold text-slate-900 tracking-wide">
+                            Copiloto Paso a Paso
+                        </h2>
+                        <p class="text-xs text-slate-500">Responde enunciados, ejecuta código y sube capturas de evidencia por apartado.</p>
+                    </div>
+                    <span id="currentStepBadge" class="text-[10px] font-mono bg-slate-100 text-slate-700 px-2.5 py-1 rounded border border-slate-300">
+                        Paso: Inicio
+                    </span>
+                </div>
             </div>
 
-            <!-- Contenedor del Chat con Marca de Agua -->
-            <div class="relative flex-1 my-4 rounded-2xl border border-white/10 bg-slate-950/60 overflow-hidden shadow-inner">
-                <div class="absolute inset-0 chat-watermark opacity-[0.06] pointer-events-none"></div>
-                <div id="chatBox" class="relative z-10 h-full overflow-y-auto p-4 space-y-3.5"></div>
+            <!-- Ventana de Chat Interactivo -->
+            <div class="relative flex-1 rounded border border-slate-200 bg-slate-50 overflow-hidden mb-3">
+                <div id="chatBox" class="relative z-10 h-full overflow-y-auto p-4 space-y-4"></div>
             </div>
 
-            <form id="chatForm" class="relative flex items-center">
-                <input type="text" id="userInput" placeholder="Realiza una pregunta sobre tu laboratorio..." class="w-full bg-slate-900/80 border border-white/15 p-3.5 pr-28 rounded-full focus:outline-none focus:border-purple-500/80 text-xs text-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.3)] placeholder-slate-500 backdrop-blur-md" required>
-                <button type="submit" class="absolute right-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider transition shadow-lg shadow-purple-600/30 active:scale-95">
-                    Consultar
-                </button>
+            <!-- Formulario de Entrada: Texto + Adjuntar Captura -->
+            <form id="chatForm" class="space-y-2">
+                <div id="imagePreviewContainer" class="hidden p-2 bg-slate-100 rounded border border-slate-200 text-xs flex justify-between items-center">
+                    <span id="imagePreviewName" class="truncate font-mono text-slate-700"></span>
+                    <button type="button" id="btnRemoveImage" class="text-rose-600 font-bold px-2">✕</button>
+                </div>
+
+                <div class="relative flex items-center gap-2">
+                    <!-- Botón para adjuntar Captura de Pantalla / Evidencia -->
+                    <label for="evidenceInput" class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 p-2.5 rounded text-xs transition font-semibold" title="Adjuntar Captura de Evidencia">
+                        📷 Evidencia
+                    </label>
+                    <input type="file" id="evidenceInput" accept="image/*" class="hidden">
+
+                    <input type="text" id="userInput" placeholder="Escriba la respuesta, datos o consulta del apartado actual..." class="flex-1 bg-white border border-slate-300 p-2.5 rounded text-xs text-slate-900 focus:outline-none focus:border-slate-900 placeholder-slate-400 shadow-sm" required>
+
+                    <button type="submit" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded text-xs font-medium tracking-wider transition">
+                        Enviar
+                    </button>
+                </div>
             </form>
         </section>
 
     </main>
 
-    <footer class="bg-slate-950/80 border-t border-white/5 py-3 text-center text-[10px] text-slate-500 font-mono">
-        LabGuard AI Engine • Powered by FastAPI & Ollama
+    <footer class="bg-white border-t border-slate-200 py-3 text-center text-[11px] text-slate-500 font-mono">
+        REEF • Generación Fiel de Informes de Laboratorio Tecsup (.docx)
     </footer>
 
-    <!-- Script de Gestión Corregido -->
+    <!-- Script Principal JS -->
     <script>
         const API_URL = "http://127.0.0.1:8000";
         let currentGuideId = "default";
+        let selectedImageBase64 = null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            const savedChat = localStorage.getItem('labguard_chat_history');
+            const savedChat = localStorage.getItem('reef_step_chat');
             const chatBox = document.getElementById('chatBox');
             if (savedChat) {
                 chatBox.innerHTML = savedChat;
             } else {
                 chatBox.innerHTML = `
-                    <div class="bg-purple-950/40 text-purple-200 p-4 rounded-2xl max-w-lg text-xs leading-relaxed border border-purple-500/20 shadow-lg backdrop-blur-md markdown-body">
-                        👋 ¡Hola CAFQ! Selecciona tu modo de procesamiento arriba y realiza cualquier consulta sobre tu práctica.
+                    <div class="bg-white text-slate-800 p-4 rounded border border-slate-200 max-w-lg text-xs leading-relaxed shadow-sm markdown-body">
+                        <strong>¡Bienvenido a REEF!</strong><br>
+                        1. Sube la guía de laboratorio en PDF.<br>
+                        2. El copiloto desglosará el documento por secciones.<br>
+                        3. Completaremos paso a paso cada apartado (carátula, ejecución de código, capturas de evidencia y respuestas analíticas).<br>
+                        4. Al finalizar, exportaremos el archivo <strong>.docx</strong> con el formato original intacto.
                     </div>
                 `;
             }
@@ -189,63 +180,75 @@
         });
 
         function saveChatHistory() {
-            localStorage.setItem('labguard_chat_history', document.getElementById('chatBox').innerHTML);
+            localStorage.setItem('reef_step_chat', document.getElementById('chatBox').innerHTML);
         }
 
         document.getElementById('btnClearChat').addEventListener('click', () => {
-            if (confirm("¿Deseas limpiar el historial?")) {
-                localStorage.removeItem('labguard_chat_history');
+            if (confirm("¿Desea reiniciar el flujo del laboratorio?")) {
+                localStorage.removeItem('reef_step_chat');
                 location.reload();
             }
         });
 
+        // Manejo de Selección de Imagen de Evidencia
+        document.getElementById('evidenceInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    selectedImageBase64 = evt.target.result;
+                    document.getElementById('imagePreviewName').textContent = `Evidencia: ${file.name}`;
+                    document.getElementById('imagePreviewContainer').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('btnRemoveImage').addEventListener('click', () => {
+            selectedImageBase64 = null;
+            document.getElementById('evidenceInput').value = '';
+            document.getElementById('imagePreviewContainer').classList.add('hidden');
+        });
+
+        // Carga y Procesamiento de la Guía PDF
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const fileInput = document.getElementById('pdfFile');
-            if (!fileInput.files[0]) {
-                alert("Selecciona un archivo PDF.");
-                return;
-            }
+            if (!fileInput.files[0]) return alert("Seleccione un PDF.");
 
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
 
             const status = document.getElementById('statusMessage');
-            status.textContent = "⌛ Indexando guía en ChromaDB...";
-            status.className = "p-3.5 rounded-2xl text-xs font-medium bg-purple-950/50 text-purple-300 border border-purple-500/30 block shadow-lg backdrop-blur-md";
+            status.textContent = "Desglosando apartados y estructura del laboratorio...";
+            status.className = "mt-2 p-2 rounded text-xs font-medium bg-slate-100 text-slate-700 border border-slate-300 block";
 
             try {
-                const res = await fetch(`${API_URL}/ingest-pdf`, { 
-                    method: 'POST', 
-                    body: formData 
-                });
-                
-                if (!res.ok) {
-                    throw new Error(`Error en el servidor: ${res.statusText}`);
-                }
+                const res = await fetch(`${API_URL}/ingest-pdf`, { method: 'POST', body: formData });
+                if (!res.ok) throw new Error("Error en el servidor.");
 
                 const data = await res.json();
                 if (data.guide_id) currentGuideId = data.guide_id;
 
-                status.textContent = "✅ Guía procesada y lista.";
-                status.className = "p-3.5 rounded-2xl text-xs font-medium bg-emerald-950/50 text-emerald-300 border border-emerald-500/30 block shadow-lg backdrop-blur-md";
+                status.textContent = "Guía desglosada con éxito.";
+                status.className = "mt-2 p-2 rounded text-xs font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 block";
 
-                if (data.checklist_verificacion && Array.isArray(data.checklist_verificacion)) {
-                    const checklistEl = document.getElementById('checklistContainer');
-                    checklistEl.innerHTML = data.checklist_verificacion.map((step, idx) => `
-                        <li class="flex items-start gap-2 bg-slate-900/60 p-2.5 rounded-xl border border-white/5">
-                            <input type="checkbox" id="step-${idx}" class="mt-0.5 rounded accent-purple-500">
-                            <label for="step-${idx}" class="cursor-pointer select-none text-slate-300">${step}</label>
-                        </li>
+                if (data.checklist_verificacion) {
+                    const container = document.getElementById('stepsContainer');
+                    container.innerHTML = data.checklist_verificacion.map((step, i) => `
+                        <div class="p-2 bg-white rounded border border-slate-200 flex items-center justify-between">
+                            <span class="font-medium text-slate-800">${step}</span>
+                            <span class="text-[10px] text-slate-400 font-mono">Paso ${i + 1}</span>
+                        </div>
                     `).join('');
                 }
             } catch (err) {
-                console.error(err);
-                status.textContent = "❌ Error al conectar con el servidor.";
-                status.className = "p-3.5 rounded-2xl text-xs font-medium bg-rose-950/50 text-rose-300 border border-rose-500/30 block shadow-lg backdrop-blur-md";
+                status.textContent = "Error al procesar la guía.";
+                status.className = "mt-2 p-2 rounded text-xs font-medium bg-rose-50 text-rose-800 border border-rose-200 block";
             }
         });
 
+        // Envío de Respuesta / Captura
         document.getElementById('chatForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const input = document.getElementById('userInput');
@@ -253,18 +256,29 @@
             const question = input.value.trim();
             const selectedMode = document.getElementById('modelMode').value;
 
-            if (!question) return;
+            if (!question && !selectedImageBase64) return;
 
-            chatBox.innerHTML += `<div class="bg-purple-600/20 text-purple-100 border border-purple-500/30 p-3.5 rounded-2xl max-w-lg ml-auto text-xs shadow-md backdrop-blur-md">${question}</div>`;
+            let userMsgContent = question;
+            if (selectedImageBase64) {
+                userMsgContent += `<br><img src="${selectedImageBase64}" class="mt-2 max-h-40 rounded border border-slate-300">`;
+            }
+
+            chatBox.innerHTML += `<div class="bg-slate-900 text-white p-3 rounded max-w-lg ml-auto text-xs shadow-sm">${userMsgContent}</div>`;
+            
+            // Limpiar inputs
             input.value = '';
+            const imgDataToSend = selectedImageBase64;
+            selectedImageBase64 = null;
+            document.getElementById('evidenceInput').value = '';
+            document.getElementById('imagePreviewContainer').classList.add('hidden');
+            
             chatBox.scrollTop = chatBox.scrollHeight;
             saveChatHistory();
 
             const loadingId = 'loading-' + Date.now();
             chatBox.innerHTML += `
-                <div id="${loadingId}" class="bg-indigo-950/40 text-indigo-300 p-3.5 rounded-2xl max-w-lg text-xs border border-indigo-500/30 flex items-center gap-2.5 shadow-md backdrop-blur-md">
-                    <span class="animate-spin text-sm">⚙️</span> 
-                    <span><strong>LabGuard AI:</strong> Procesando consulta (${selectedMode === 'fast' ? 'Modo Rápido' : 'Modo Profundo'})...</span>
+                <div id="${loadingId}" class="bg-white text-slate-600 p-3 rounded max-w-lg text-xs border border-slate-200 shadow-sm">
+                    Analizando respuesta e insertando datos en la sección del informe...
                 </div>
             `;
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -273,36 +287,38 @@
                 const res = await fetch(`${API_URL}/query`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question: question, guide_id: currentGuideId, mode: selectedMode })
+                    body: JSON.stringify({ 
+                        question: question, 
+                        guide_id: currentGuideId, 
+                        mode: selectedMode,
+                        image: imgDataToSend
+                    })
                 });
 
-                const loadingEl = document.getElementById(loadingId);
-                if (loadingEl) loadingEl.remove();
-
-                if (!res.ok) {
-                    throw new Error(`Error HTTP: ${res.status}`);
-                }
+                document.getElementById(loadingId)?.remove();
+                if (!res.ok) throw new Error("Error HTTP " + res.status);
 
                 const data = await res.json();
-                let respuestaTexto = data.answer || data.detail || "Sin respuesta.";
-                const parsedHtml = marked.parse(respuestaTexto);
+                const parsedHtml = marked.parse(data.answer || "Respuesta procesada.");
 
                 chatBox.innerHTML += `
-                    <div class="bg-slate-900/80 text-slate-100 p-4 rounded-2xl max-w-xl text-xs border border-purple-500/20 leading-relaxed shadow-lg backdrop-blur-md markdown-body">
-                        <strong class="text-purple-400 font-semibold flex items-center gap-1.5 mb-2">
-                            🤖 LabGuard AI (${selectedMode === 'fast' ? 'Flash' : 'Deep Agent'})
-                        </strong>
+                    <div class="bg-white text-slate-900 p-4 rounded max-w-xl text-xs border border-slate-200 leading-relaxed shadow-sm markdown-body">
+                        <strong class="block text-slate-500 font-semibold mb-2 uppercase text-[10px]">Copiloto REEF</strong>
                         ${parsedHtml}
                     </div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
                 saveChatHistory();
             } catch (err) {
-                console.error(err);
-                const loadingEl = document.getElementById(loadingId);
-                if (loadingEl) loadingEl.remove();
-                chatBox.innerHTML += `<div class="bg-rose-950/50 text-rose-300 p-3.5 rounded-2xl max-w-lg text-xs border border-rose-500/30">❌ Error de conexión con el servidor.</div>`;
+                document.getElementById(loadingId)?.remove();
+                chatBox.innerHTML += `<div class="bg-rose-50 text-rose-800 p-3 rounded max-w-lg text-xs border border-rose-200">Error de conexión con el motor local.</div>`;
                 saveChatHistory();
             }
+        });
+
+        // Exportación Final a DOCX
+        document.getElementById('btnExportDocx').addEventListener('click', async () => {
+            alert("Generando el documento .docx con todas las secciones, capturas y textos completados...");
+            window.open(`${API_URL}/export-docx?guide_id=${currentGuideId}`, '_blank');
         });
     </script>
 </body>
